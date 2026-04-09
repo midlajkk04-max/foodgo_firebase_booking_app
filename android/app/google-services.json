@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "576635748793",
+    "project_id": "foodgo-b691b",
+    "storage_bucket": "foodgo-b691b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576635748793:android:835811d53817f3088ef668",
+        "android_client_info": {
+          "package_name": "com.example.firebase_project_hotel_booking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARAHewOTSvn4lnP3SEKeJmR7MBzrMG95U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576635748793:android:c07539f8439dd8b58ef668",
+        "android_client_info": {
+          "package_name": "com.example.firebase_project_hotel_bookking"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARAHewOTSvn4lnP3SEKeJmR7MBzrMG95U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
