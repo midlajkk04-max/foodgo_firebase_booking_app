@@ -12,140 +12,143 @@ class Orderscreen extends StatefulWidget {
 }
 
 class _OrderscreenState extends State<Orderscreen> {
+  String? id;
 
- String? id;
+  getthesharedpref() async {
+    id = await SharedPreferncehelper().getuserId();
+    setState(() {});
 
- getthesharedpref()async{
-  id =await SharedPreferncehelper().getuserId();
-  setState(() {
-    
-  });
+    getontheload() async {
+      await getthesharedpref();
+      orderStream = await Databasemethod().getuserorders(id!);
+      setState(() {});
+    }
 
-  getontheload()async{
-    await getthesharedpref();
-    orderStream =await Databasemethod().getuserorders(id!);
-    setState(() {
-      
-    });
+    @override
+    void initState() {
+      super.initState();
+      getontheload();
+    }
   }
-   @override
-   void initState(){
-    super.initState();
-    getontheload();
-   }
- }
-
 
   Stream? orderStream;
 
-   Widget allorders(){
-    return StreamBuilder(stream: orderStream, builder: (context ,snapshot){
-      return snapshot.hasData? ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: snapshot.data.docs.length,
-      itemBuilder: (context,Index){
-       DocumentSnapshot ds = snapshot.data.docs[Index];
-       return Container(
-                      margin: EdgeInsets.only(left: 20.0, right: 20.0),
-                      child: Material(
-                        elevation: 3.0,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
+  Widget allorders() {
+    return StreamBuilder(
+      stream: orderStream,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, Index) {
+                  DocumentSnapshot ds = snapshot.data.docs[Index];
+                  return Container(
+                    margin: EdgeInsets.only(
+                      left: 20.0,
+                      right: 20.0,
+                      bottom: 20.0,
+                    ),
+                    child: Material(
+                      elevation: 3.0,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10),
+                      ),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
                         ),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 5.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.location_on_outlined,
+                                  color: Color(0xffef2b39),
+                                ),
+                                SizedBox(width: 10.0),
+                                Text(
+                                  ds["Address"],
+                                  style: Appwidgets.simpletextfeildstyle(),
+                                ),
+                              ],
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(height: 5.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.location_on_outlined,
-                                    color: Color(0xffef2b39),
-                                  ),
-                                  SizedBox(width: 10.0),
-                                  Text(
-                                    ds["Address"],
-                                    style: Appwidgets.simpletextfeildstyle(),
-                                  ),
-                                ],
-                              ),
-                              Divider(),
-                              Row(
-                               
-                                children: [
-                                  Image.asset(
-                                   ds['Foodimage'],
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  SizedBox(width: 20.0),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        ds['FoodName'],
-                                        style: Appwidgets.boldtextfeildstyle(),
-                                      ),
-                                       SizedBox(height: 5.0,),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons
-                                                .production_quantity_limits_outlined,
-                                            color: Color(0xffef2b39),
-                                          ),
-                                          SizedBox(width: 10.0),
-                                          Text(
-                                            ds["Quantity"],
-                                            style:
-                                                Appwidgets.boldtextfeildstyle(),
-                                          ),
-                                          SizedBox(width: 30.0),
-                                          Icon(
-                                            Icons.monetization_on,
-                                            color: Color(0xffef2b39),
-                                          ),
-                                          SizedBox(width: 10.0),
-                                          Text(
-                                            "\$"+ds["Totel"],
-                                            style:
-                                                Appwidgets.boldtextfeildstyle(),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 5.0,),
-                                      Text(
-                                        ds["Status"]+"",
-                                        style: TextStyle(
+                            Divider(),
+                            Row(
+                              children: [
+                                Image.asset(
+                                  ds['Foodimage'],
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover,
+                                ),
+                                SizedBox(width: 20.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      ds['FoodName'],
+                                      style: Appwidgets.boldtextfeildstyle(),
+                                    ),
+                                    SizedBox(height: 5.0),
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons
+                                              .production_quantity_limits_outlined,
                                           color: Color(0xffef2b39),
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
                                         ),
+                                        SizedBox(width: 10.0),
+                                        Text(
+                                          ds["Quantity"],
+                                          style:
+                                              Appwidgets.boldtextfeildstyle(),
+                                        ),
+                                        SizedBox(width: 30.0),
+                                        Icon(
+                                          Icons.monetization_on,
+                                          color: Color(0xffef2b39),
+                                        ),
+                                        SizedBox(width: 10.0),
+                                        Text(
+                                          "\$" + ds["Totel"],
+                                          style:
+                                              Appwidgets.boldtextfeildstyle(),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5.0),
+                                    Text(
+                                      ds["Status"] + "",
+                                      style: TextStyle(
+                                        color: Color(0xffef2b39),
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    );
-      }):Container();
-    });
-   }
+                    ),
+                  );
+                },
+              )
+            : Container();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,8 +178,9 @@ class _OrderscreenState extends State<Orderscreen> {
                   children: [
                     SizedBox(height: 20.0),
                     Container(
-                       height: MediaQuery.of(context).size.height/1.5,
-                      child: allorders()),
+                      height: MediaQuery.of(context).size.height / 1.5,
+                      child: allorders(),
+                    ),
                   ],
                 ),
               ),

@@ -139,6 +139,23 @@ class _AllOrderscreenState extends State<AllOrderscreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                      SizedBox(height: 5.0,),
+                                      GestureDetector(
+                                        onTap: ()async {
+                                          await Databasemethod().updateAdminOrder(ds.id);
+                                          await Databasemethod().updateuserOrder(ds["id"], ds.id);
+                                        },
+                                        child: Container(
+                                          width: 100,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Center(child: Text("Delivered",style: Appwidgets.whitetextfeildstyle(),)),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10.0,),
                                     ],
                                   ),
                                 ],

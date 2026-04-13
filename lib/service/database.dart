@@ -55,7 +55,60 @@ class Databasemethod {
 
   Future<Stream<QuerySnapshot>> getadminorders() async {
     return await FirebaseFirestore.instance
-        .collection("orders").where("Status",isEqualTo: "pending").snapshots();
-        
+        .collection("orders")
+        .where("Status", isEqualTo: "pending")
+        .snapshots();
+  }
+
+  Future updateAdminOrder(String id) async {
+    return await FirebaseFirestore.instance.collection("orders").doc(id).update(
+      {"Status": "Deliverd"},
+    );
+  }
+
+  Future updateuserOrder(String userid, String docid) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userid)
+        .collection("orders")
+        .doc(docid)
+        .update({"Status": "Delivered"});
+  }
+
+  Future<Stream<QuerySnapshot>> getAllusers() async {
+    return await FirebaseFirestore.instance.collection("users").snapshots();
+  }
+
+  Future deleteuser(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .delete();
+  }
+
+  Future addusertrasaction(Map<String, dynamic> userordermap, String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .collection("Transaction")
+        .add(userordermap);
+  }
+
+  Future<Stream<QuerySnapshot>> getusertransactions(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .collection("Transactions")
+        .snapshots();
+  }
+
+  Future<QuerySnapshot> search(updatedname) async {
+    return await FirebaseFirestore.instance
+        .collection("Food")
+        .where(
+          "SearchKey",
+          isEqualTo: updatedname.substring(0, 1).toUppercase(),
+        )
+        .get();
   }
 }

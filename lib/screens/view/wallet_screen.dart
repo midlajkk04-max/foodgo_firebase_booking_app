@@ -8,6 +8,7 @@ import 'package:firebase_project_hotel_bookking/service/shared_preferncehelper.d
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class Walletscreen extends StatefulWidget {
   const Walletscreen({super.key});
@@ -33,12 +34,13 @@ class _WalletscreenState extends State<Walletscreen> {
 
   getuserWallet() async {
     await getthesharedpref();
+    walletStream =await Databasemethod().getusertransactions(id!);
     QuerySnapshot querySnapshot = await Databasemethod().getuserwalletbyemail(
       email!,
     );
 
-    wallet = "${querySnapshot.docs[0]["wallet"]}";
-
+    wallet = "${querySnapshot.docs[0]["Wallet"]}";
+    print(wallet);
     setState(() {});
   }
 
@@ -47,6 +49,47 @@ class _WalletscreenState extends State<Walletscreen> {
     getuserWallet();
     super.initState();
   }
+
+  
+  Stream? walletStream;
+
+  Widget allTransactions() {
+    return StreamBuilder(
+      stream: walletStream,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                padding: EdgeInsets.zero,
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (context, Index) {
+                  DocumentSnapshot ds = snapshot.data.docs[Index];
+                  return Container(
+                                    padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.only(left: 20.0,right: 20.0,bottom: 20.0),
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      color: Color(0xffececf8),borderRadius: BorderRadius.circular(10)
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(ds["Date"],style: Appwidgets.headlinetextfeildstyle(),),
+                                        SizedBox(width: 20.0,),
+                                        Column(
+                                          children: [
+                                            Text("Amount Add to wallet"),
+                                            Text("\$"+ds["Amount"],style: TextStyle(color: Color(0xffef2b39),fontSize: 25,fontWeight: FontWeight.bold),)
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  );
+                },
+              )
+            : Container();
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -231,6 +274,32 @@ class _WalletscreenState extends State<Walletscreen> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 20.0),
+                          Expanded(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30),
+                                  topRight: Radius.circular(30),
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "Your Transactions",
+                                    style: Appwidgets.boldtextfeildstyle(),
+                                  ),
+                                  SizedBox(height: 20.0,),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height/2.5,
+                                    child: allTransactions()),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -266,6 +335,14 @@ class _WalletscreenState extends State<Walletscreen> {
         await Databasemethod().updateuserwallet(updatewallet.toString(), id!);
         await getuserWallet();
         setState(() {});
+        DateTime now = DateTime.now();
+        String formateDate = DateFormat("dd MMM").format(now);
+
+        Map<String, dynamic> usertransactions = {
+          "Amount": amount,
+          "Date": formateDate,
+        };
+        await Databasemethod().addusertrasaction(usertransactions, id!);
       });
 
       showDialog(

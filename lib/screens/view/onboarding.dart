@@ -1,4 +1,5 @@
 import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
+import 'package:firebase_project_hotel_bookking/screens/view/bottomnav_screen.dart';
 import 'package:firebase_project_hotel_bookking/screens/view/homeScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,7 @@ class OnboardingScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(builder: (context) => BottomNavscreen()),
                 );
               },
               style: ElevatedButton.styleFrom(

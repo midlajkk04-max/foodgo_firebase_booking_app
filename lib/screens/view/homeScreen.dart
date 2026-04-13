@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
 import 'package:firebase_project_hotel_bookking/model/burger_model.dart';
 import 'package:firebase_project_hotel_bookking/model/category_model.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_project_hotel_bookking/model/pizza_model.dart';
 import 'package:firebase_project_hotel_bookking/screens/view/details_page.dart';
 import 'package:firebase_project_hotel_bookking/service/burger_data.dart';
 import 'package:firebase_project_hotel_bookking/service/category.dart';
+import 'package:firebase_project_hotel_bookking/service/database.dart';
 import 'package:firebase_project_hotel_bookking/service/pizza_data.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +22,8 @@ class _HomeState extends State<HomeScreen> {
   List<PizzaModel> pizz = [];
   List<BurgerModel> burger = [];
   String track = "0";
+  bool search =false;
+  TextEditingController searchcontroller =TextEditingController();
 
   @override
   void initState() {
@@ -28,7 +32,39 @@ class _HomeState extends State<HomeScreen> {
     burger = getburger();
     super.initState();
   }
+  
+  var quaryResultSet = [];
+  var tempSerchStore =[];
 
+  initiateSerch(value){
+    if(value.length == 0){
+      setState(() {
+        quaryResultSet = [];
+        tempSerchStore = [];
+      });
+    }
+    setState(() {
+      search =true;
+    });
+
+    var Capitalizedvalue =value.substring(0 ,1).toUppercase()+ value.subString(1);
+    if(quaryResultSet.isEmpty && value.length ==1){
+      Databasemethod().search(value).then((QuerySnapshot docs){
+        for(int i =0;i < docs.docs.length;++i){
+          quaryResultSet.add(docs.docs[i].data());
+        }
+      });
+    }else{
+      tempSerchStore =[];
+      quaryResultSet.forEach((Element){
+        if(Element['Name'].startswith(Capitalizedvalue)){
+          setState(() {
+            tempSerchStore.add(Element);
+          });
+        }
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +97,10 @@ class _HomeState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
+                  controller: searchcontroller,
+                  onChanged: (value) {
+                    initiateSerch(value.toUpperCase());
+                  },
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "Search food item....",
