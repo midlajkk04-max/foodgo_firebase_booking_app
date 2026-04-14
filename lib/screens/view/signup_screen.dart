@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_project_hotel_bookking/controller/signup_controller.dart';
 import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
-import 'package:firebase_project_hotel_bookking/screens/view/bottomnav_screen.dart';
 import 'package:firebase_project_hotel_bookking/screens/view/login_screen.dart';
-import 'package:firebase_project_hotel_bookking/service/database.dart';
-import 'package:firebase_project_hotel_bookking/service/shared_preferncehelper.dart';
 import 'package:flutter/material.dart';
-import 'package:random_string/random_string.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+
 
 class Signupscreen extends StatefulWidget {
   const Signupscreen({super.key});
@@ -16,68 +13,20 @@ class Signupscreen extends StatefulWidget {
 }
 
 class _SignupscreenState extends State<Signupscreen> {
-  String Email = "";
-  String Password = "";
-  String name = "";
-
   TextEditingController namecontroller = TextEditingController();
   TextEditingController mailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
 
-  registration() async {
-    if (Password != null &&
-        namecontroller.text != "" &&
-        mailcontroller.text != "") {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: Email, password: Password);
-            String Id =randomAlphaNumeric(10);
-            Map<String,dynamic> userinfomap ={
-              "Name" :namecontroller.text,
-              "Email" :mailcontroller.text,
-              "Id":Id,
-              "wallet":"0",
-            };
-            await SharedPreferncehelper().saveuseremail(Email);
-            await SharedPreferncehelper().saveusername(namecontroller.text);
-            await SharedPreferncehelper().saveuserId(Id);
-            await Databasemethod().adduserdetails(userinfomap, Id);
-             ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.green,
-              content: Text(
-                "Registerde successfully",
-                style: TextStyle(fontSize: 18.0,fontWeight: FontWeight.bold),
-              ),
-            ),
-          );
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>BottomNavscreen()));
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak password') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.orangeAccent,
-              content: Text(
-                "passwerd provided is too weak",
-                style: TextStyle(fontSize: 18.0),
-              ),
-            ),
-          );
-        }else if (e.code == "email-already-in-use"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-             backgroundColor: Colors.orangeAccent,
-            content: Text("Account Already exists",style: TextStyle(fontSize: 18.0),)));
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<SignupController>(context);
+
     return Scaffold(
       body: Container(
         child: Stack(
           children: [
+
+            // ================= TOP SECTION (NO CHANGE) =================
             Container(
               height: MediaQuery.of(context).size.height / 2.5,
               padding: EdgeInsets.only(top: 30.0),
@@ -106,6 +55,8 @@ class _SignupscreenState extends State<Signupscreen> {
                 ],
               ),
             ),
+
+            // ================= FORM SECTION (NO CHANGE) =================
             Container(
               margin: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height / 3.2,
@@ -126,16 +77,23 @@ class _SignupscreenState extends State<Signupscreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+
                       SizedBox(height: 20.0),
+
                       Center(
                         child: Text(
                           "SignUp",
                           style: Appwidgets.headlinetextfeildstyle(),
                         ),
                       ),
+
                       SizedBox(height: 30.0),
-                      Text("Name", style: Appwidgets.signuptextfeildstyle()),
+
+                      Text("Name",
+                          style: Appwidgets.signuptextfeildstyle()),
                       SizedBox(height: 5.0),
+
+                      // ===== NAME FIELD (EXACT YOUR DECORATION) =====
                       Container(
                         decoration: BoxDecoration(
                           color: Color(0xffececf8),
@@ -150,9 +108,13 @@ class _SignupscreenState extends State<Signupscreen> {
                           ),
                         ),
                       ),
+
                       SizedBox(height: 20.0),
-                      Text("Email", style: Appwidgets.signuptextfeildstyle()),
+
+                      Text("Email",
+                          style: Appwidgets.signuptextfeildstyle()),
                       SizedBox(height: 5.0),
+
                       Container(
                         decoration: BoxDecoration(
                           color: Color(0xffececf8),
@@ -167,20 +129,21 @@ class _SignupscreenState extends State<Signupscreen> {
                           ),
                         ),
                       ),
+
                       SizedBox(height: 20.0),
-                      Text(
-                        "Password",
-                        style: Appwidgets.signuptextfeildstyle(),
-                      ),
+
+                      Text("Password",
+                          style: Appwidgets.signuptextfeildstyle()),
                       SizedBox(height: 5.0),
+
                       Container(
                         decoration: BoxDecoration(
                           color: Color(0xffececf8),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextField(
-                          obscureText: true,
                           controller: passwordcontroller,
+                          obscureText: true,
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: "Enter Password",
@@ -188,17 +151,22 @@ class _SignupscreenState extends State<Signupscreen> {
                           ),
                         ),
                       ),
+
                       SizedBox(height: 30.0),
+
                       GestureDetector(
                         onTap: () {
-                          if(namecontroller.text!="" && mailcontroller.text!= ""&& passwordcontroller.text!=""){
-                            setState(() {
-                              name =namecontroller.text;
-                             Email =mailcontroller.text;
-                             Password =passwordcontroller.text;
-                            });
-                             registration();
+                          if (namecontroller.text.isNotEmpty &&
+                              mailcontroller.text.isNotEmpty &&
+                              passwordcontroller.text.isNotEmpty) {
+                            authProvider.registerUser(
+                              name: namecontroller.text,
+                              email: mailcontroller.text,
+                              password: passwordcontroller.text,
+                              context: context,
+                            );
                           }
+                          
                         },
                         child: Center(
                           child: Container(
@@ -209,15 +177,21 @@ class _SignupscreenState extends State<Signupscreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                             child: Center(
-                              child: Text(
-                                "Sign up",
-                                style: Appwidgets.boldwhitetextfeildstyle(),
-                              ),
+                              child: authProvider.isLoading
+                                  ? CircularProgressIndicator(
+                                      color: Colors.white,
+                                    )
+                                  : Text(
+                                      "Sign up",
+                                      style: Appwidgets.boldwhitetextfeildstyle(),
+                                    ),
                             ),
                           ),
                         ),
                       ),
+
                       SizedBox(height: 30.0),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -247,6 +221,7 @@ class _SignupscreenState extends State<Signupscreen> {
                 ),
               ),
             ),
+
           ],
         ),
       ),

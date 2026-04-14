@@ -48,9 +48,15 @@ class Databasemethod {
   }
 
   Future updateuserwallet(String amount, String id) async {
-    return await FirebaseFirestore.instance.collection("users").doc(id).update({
-      "wallet": amount,
-    });
+    final doc = FirebaseFirestore.instance.collection("users").doc(id);
+
+    final snapshot = await doc.get();
+
+    if (snapshot.exists) {
+      await doc.update({"wallet": amount});
+    } else {
+      await doc.set({"wallet": amount});
+    }
   }
 
   Future<Stream<QuerySnapshot>> getadminorders() async {
@@ -90,12 +96,12 @@ class Databasemethod {
     return await FirebaseFirestore.instance
         .collection("users")
         .doc(id)
-        .collection("Transaction")
+        .collection("Transactions")
         .add(userordermap);
   }
 
   Future<Stream<QuerySnapshot>> getusertransactions(String id) async {
-    return await FirebaseFirestore.instance
+    return FirebaseFirestore.instance
         .collection("users")
         .doc(id)
         .collection("Transactions")

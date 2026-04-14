@@ -1,72 +1,24 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
-import 'package:firebase_project_hotel_bookking/model/burger_model.dart';
-import 'package:firebase_project_hotel_bookking/model/category_model.dart';
-import 'package:firebase_project_hotel_bookking/model/pizza_model.dart';
-import 'package:firebase_project_hotel_bookking/screens/view/details_page.dart';
-import 'package:firebase_project_hotel_bookking/service/burger_data.dart';
-import 'package:firebase_project_hotel_bookking/service/category.dart';
-import 'package:firebase_project_hotel_bookking/service/database.dart';
-import 'package:firebase_project_hotel_bookking/service/pizza_data.dart';
+import 'package:firebase_project_hotel_bookking/controller/Home_controler.dart';
+import 'package:firebase_project_hotel_bookking/screens/custom_widgets.dart/Home_category_tile.dart';
+import 'package:firebase_project_hotel_bookking/screens/custom_widgets.dart/home_foodTile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeState();
-}
+  Widget build(BuildContext context) {
+    final provider = Provider.of<HomeControler>(context);
 
-class _HomeState extends State<HomeScreen> {
-  List<CategoryModel> categoryes = [];
-  List<PizzaModel> pizz = [];
-  List<BurgerModel> burger = [];
-  String track = "0";
-  bool search =false;
-  TextEditingController searchcontroller =TextEditingController();
-
-  @override
-  void initState() {
-    categoryes = getcategores();
-    pizz = getpizza();
-    burger = getburger();
-    super.initState();
-  }
-  
-  var quaryResultSet = [];
-  var tempSerchStore =[];
-
-  initiateSerch(value){
-    if(value.length == 0){
-      setState(() {
-        quaryResultSet = [];
-        tempSerchStore = [];
-      });
-    }
-    setState(() {
-      search =true;
+    /// ✅ SAFE INIT (fix for your error)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (provider.categories.isEmpty) {
+        provider.initData();
+      }
     });
 
-    var Capitalizedvalue =value.substring(0 ,1).toUppercase()+ value.subString(1);
-    if(quaryResultSet.isEmpty && value.length ==1){
-      Databasemethod().search(value).then((QuerySnapshot docs){
-        for(int i =0;i < docs.docs.length;++i){
-          quaryResultSet.add(docs.docs[i].data());
-        }
-      });
-    }else{
-      tempSerchStore =[];
-      quaryResultSet.forEach((Element){
-        if(Element['Name'].startswith(Capitalizedvalue)){
-          setState(() {
-            tempSerchStore.add(Element);
-          });
-        }
-      });
-    }
-  }
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         top: false,
@@ -75,6 +27,8 @@ class _HomeState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              /// 🔴 IMAGE (same)
               Image.asset(
                 "assets/images/home.png",
                 height: 50,
@@ -82,6 +36,7 @@ class _HomeState extends State<HomeScreen> {
                 fit: BoxFit.contain,
               ),
 
+              /// 🔴 TEXT (same)
               Text(
                 "Order your favourite food!",
                 style: Appwidgets.simpletextfeildstyle(),
@@ -89,6 +44,7 @@ class _HomeState extends State<HomeScreen> {
 
               SizedBox(height: 20),
 
+              /// 🔴 SEARCH FIELD (same UI)
               Container(
                 height: 50,
                 margin: EdgeInsets.only(right: 20.0),
@@ -97,9 +53,9 @@ class _HomeState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: searchcontroller,
+                  controller: provider.searchcontroller,
                   onChanged: (value) {
-                    initiateSerch(value.toUpperCase());
+                    provider.initiateSearch(value);
                   },
                   decoration: InputDecoration(
                     border: InputBorder.none,
@@ -111,177 +67,72 @@ class _HomeState extends State<HomeScreen> {
 
               SizedBox(height: 20),
 
+              /// 🔴 CATEGORY LIST (same)
               Container(
                 height: 70,
                 child: ListView.builder(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
-                  itemCount: categoryes.length,
+                  itemCount: provider.categories.length,
                   itemBuilder: (context, index) {
-                    return Categorytile(
-                      categoryes[index].name!,
-                      categoryes[index].images!,
-                      index.toString(),
+                    return HomeCategoryTile(
+                      name: provider.categories[index].name!,
+                      image: provider.categories[index].images!,
+                      index: index.toString(),
                     );
                   },
                 ),
               ),
+
               SizedBox(height: 10.0),
 
-              track == "0"
+              /// 🔴 GRID VIEW (same)
+              provider.track == "0"
                   ? Expanded(
                       child: GridView.builder(
                         padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           childAspectRatio: 0.69,
                           mainAxisSpacing: 20.0,
                           crossAxisSpacing: 20.0,
                         ),
-                        itemCount: pizz.length,
+                        itemCount: provider.pizz.length,
                         itemBuilder: (context, index) {
-                          return FoodTile(
-                            pizz[index].name!,
-                            pizz[index].image!,
-                            pizz[index].prize!,
+                          return HomeFoodtile(
+                            name: provider.pizz[index].name!,
+                            image: provider.pizz[index].image!,
+                            price: provider.pizz[index].prize!,
                           );
                         },
                       ),
                     )
-                  : track == "1"
-                  ? Expanded(
-                      child: GridView.builder(
-                        padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.69,
-                          mainAxisSpacing: 20.0,
-                          crossAxisSpacing: 20.0,
-                        ),
-                        itemCount: burger.length,
-                        itemBuilder: (context, index) {
-                          return FoodTile(
-                            burger[index].name!,
-                            burger[index].image!,
-                            burger[index].prize!,
-                          );
-                        },
-                      ),
-                    )
-                  : Container(),
+                  : provider.track == "1"
+                      ? Expanded(
+                          child: GridView.builder(
+                            padding: EdgeInsets.zero,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.69,
+                              mainAxisSpacing: 20.0,
+                              crossAxisSpacing: 20.0,
+                            ),
+                            itemCount: provider.burger.length,
+                            itemBuilder: (context, index) {
+                              return HomeFoodtile(
+                                name: provider.burger[index].name!,
+                                image: provider.burger[index].image!,
+                                price: provider.burger[index].prize!,
+                              );
+                            },
+                          ),
+                        )
+                      : Container(),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget Categorytile(String name, String images, String categeryindex) {
-    return GestureDetector(
-      onTap: () {
-        track = categeryindex.toString();
-        setState(() {});
-      },
-      child: track == categeryindex
-          ? Container(
-              margin: EdgeInsets.only(right: 20.0, bottom: 10.0),
-              child: Material(
-                elevation: 3.0,
-                borderRadius: BorderRadius.circular(30),
-                child: Container(
-                  padding: EdgeInsets.only(right: 20.0, left: 20.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xffef2b39),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        images,
-                        height: 40,
-                        width: 40,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(width: 10),
-                      Text(name, style: Appwidgets.simpletextfeildstyle()),
-                    ],
-                  ),
-                ),
-              ),
-            )
-          : Container(
-              padding: EdgeInsets.only(right: 20.0, left: 20.0),
-              margin: EdgeInsets.only(right: 20.0, bottom: 10.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFececf8),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Row(
-                children: [
-                  Image.asset(images, height: 40, width: 40, fit: BoxFit.cover),
-                  SizedBox(width: 10),
-                  Text(name, style: Appwidgets.simpletextfeildstyle()),
-                ],
-              ),
-            ),
-    );
-  }
-
-  Widget FoodTile(String name, String image, String price) {
-    return Container(
-      margin: EdgeInsets.only(right: 20.0),
-      padding: EdgeInsets.only(left: 10.0, top: 10.0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.black38),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Image.asset(
-              image,
-              height: 150,
-              width: 150,
-              fit: BoxFit.contain,
-            ),
-          ),
-          Text(name, style: Appwidgets.boldtextfeildstyle()),
-          Text("\$" + price, style: Appwidgets.pricetextfeildstyle()),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailsPage(image: image, name: name, price: price),
-                    ),
-                  );
-                },
-                child: Container(
-                  height: 50,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    color: Color(0xffef2b39),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: 30.0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }
