@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_project_hotel_bookking/admin/admin_login.dart';
-import 'package:firebase_project_hotel_bookking/admin/all_order.dart';
-import 'package:firebase_project_hotel_bookking/admin/home_admin.dart';
-import 'package:firebase_project_hotel_bookking/admin/manage_users.dart';
+import 'package:firebase_project_hotel_bookking/admin/controller/admin_login_controller.dart';
+import 'package:firebase_project_hotel_bookking/admin/controller/admin_order_controller.dart';
+import 'package:firebase_project_hotel_bookking/admin/controller/manage_user_controller.dart';
+import 'package:firebase_project_hotel_bookking/admin/screens/admin_loginScreen.dart';
 import 'package:firebase_project_hotel_bookking/controller/Home_controler.dart';
 import 'package:firebase_project_hotel_bookking/controller/details_controller.dart';
 import 'package:firebase_project_hotel_bookking/controller/login_controller.dart';
@@ -32,7 +32,10 @@ void main() async {
       ChangeNotifierProvider(create: (_)=>SignupController()),
       ChangeNotifierProvider(create: (_)=>OrderController()),
       ChangeNotifierProvider(create: (_)=>WalletController()),
-      ChangeNotifierProvider(create: (_)=>ProfileController())
+      ChangeNotifierProvider(create: (_)=>ProfileController()),
+      ChangeNotifierProvider(create: (_)=>AdminLoginController()),
+      ChangeNotifierProvider(create: (_)=>AdminOrderController()),
+      ChangeNotifierProvider(create: (_)=>ManageUserController())
     ],child:  MyApp()),
   );
 }
@@ -44,7 +47,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashWrapper(),
+      home: AdminLoginscreen(),
     );
   }
 }

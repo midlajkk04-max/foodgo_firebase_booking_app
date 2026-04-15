@@ -20,15 +20,17 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  @override
-  void initState() {
-    super.initState();
+ @override
+void initState() {
+  super.initState();
 
-    Future.microtask(() {
-      Provider.of<DetailsController>(context, listen: false)
-          .init(widget.price);
-    });
-  }
+  Future.microtask(() {
+    final provider =
+        Provider.of<DetailsController>(context, listen: false);
+
+    provider.init(widget.price); // always reset
+  });
+}
 
   @override
   Widget build(BuildContext context) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../service/database.dart';
 import '../service/shared_preferncehelper.dart';
@@ -15,4 +17,8 @@ class OrderController extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  FutureOr<dynamic> fetchOrders() {}
+
+  Future<void> markAsDelivered(id, d) async {}
 }

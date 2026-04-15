@@ -5,7 +5,6 @@ import 'package:firebase_project_hotel_bookking/screens/custom_widgets.dart/orde
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class Orderscreen extends StatefulWidget {
   const Orderscreen({super.key});
 
@@ -14,7 +13,6 @@ class Orderscreen extends StatefulWidget {
 }
 
 class _OrderscreenState extends State<Orderscreen> {
-
   @override
   void initState() {
     super.initState();
@@ -29,17 +27,19 @@ class _OrderscreenState extends State<Orderscreen> {
     return StreamBuilder(
       stream: orderStream,
       builder: (context, snapshot) {
-        return snapshot.hasData
-            ? ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (context, index) {
-                  return OrderTile(
-                    ds: snapshot.data.docs[index],
-                  );
-                },
-              )
-            : Container();
+        if (!snapshot.hasData) {
+          return Container();
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.only(top: 20),
+          itemCount: snapshot.data.docs.length,
+          itemBuilder: (context, index) {
+            return OrderTile(
+              ds: snapshot.data.docs[index],
+            );
+          },
+        );
       },
     );
   }
@@ -60,8 +60,10 @@ class _OrderscreenState extends State<Orderscreen> {
                     style: Appwidgets.headlinetextfeildstyle()),
               ],
             ),
+
             SizedBox(height: 10.0),
 
+            /// ✅ FIXED PART
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -72,15 +74,9 @@ class _OrderscreenState extends State<Orderscreen> {
                     topRight: Radius.circular(30),
                   ),
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(height: 20.0),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 1.5,
-                      child: allorders(provider.orderStream),
-                    ),
-                  ],
-                ),
+
+                /// ❌ NO COLUMN HERE
+                child: allorders(provider.orderStream),
               ),
             ),
           ],

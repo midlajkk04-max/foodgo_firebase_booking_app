@@ -12,15 +12,12 @@ class DetailsController extends ChangeNotifier {
   int quantity = 1;
   int toteprice = 0;
 
-  bool isInitialized = false;
-
-  /// INIT
+  /// ✅ INIT (FIXED)
   void init(String price) {
-    if (!isInitialized) {
-      toteprice = int.tryParse(price) ?? 0;
-      isInitialized = true;
-      getuserWallet();
-    }
+    toteprice = int.tryParse(price) ?? 0;
+    quantity = 1;
+    getuserWallet();
+    notifyListeners();
   }
 
   /// GET USER DATA
@@ -31,21 +28,18 @@ class DetailsController extends ChangeNotifier {
     address = await SharedPreferncehelper().getuserAddress();
   }
 
-  /// GET WALLET SAFE
+  /// GET WALLET
   Future<void> getuserWallet() async {
     await getthesharedpref();
 
-    /// ✅ SAFE CHECK
-    if (email == null || email == "") {
-      return;
-    }
+    if (email == null || email == "") return;
 
     QuerySnapshot qs =
         await Databasemethod().getuserwalletbyemail(email!);
 
-    /// ✅ SAFE CHECK
     if (qs.docs.isEmpty) {
       wallet = "0";
+      notifyListeners();
       return;
     }
 
@@ -56,32 +50,33 @@ class DetailsController extends ChangeNotifier {
   /// QUANTITY
   void addQuantity(String price) {
     quantity++;
-    toteprice += int.parse(price);
+    toteprice += int.tryParse(price) ?? 0;
     notifyListeners();
   }
 
   void removeQuantity(String price) {
     if (quantity > 1) {
       quantity--;
-      toteprice -= int.parse(price);
+      toteprice -= int.tryParse(price) ?? 0;
       notifyListeners();
     }
   }
 
-  /// ORDER (LOGIC SAME)
+  /// ✅ ORDER (FIXED)
   Future<void> placeOrder(
       BuildContext context, String foodName, String image) async {
 
-    /// ✅ SAFE ONLY (NO LOGIC CHANGE)
-    if (email == null || id == null || wallet == null) {
+    if (email == null || id == null || wallet == null) return;
+
+    int walletAmount = int.tryParse(wallet!) ?? 0;
+
+    if (address == null || address == "") {
+      openbox(context);
       return;
     }
 
-    if (address == null) {
-      openbox(context);
-    } else if (int.parse(wallet!) > toteprice) {
-
-      int updatewallet = int.parse(wallet!) - toteprice;
+    if (walletAmount >= toteprice) {
+      int updatewallet = walletAmount - toteprice;
 
       await Databasemethod()
           .updateuserwallet(updatewallet.toString(), id!);
@@ -92,11 +87,11 @@ class DetailsController extends ChangeNotifier {
         "Name": name,
         "id": id,
         "Quantity": quantity.toString(),
-        "Totel": toteprice.toString(),
+        "Total": toteprice.toString(), // ✅ fixed
         "Email": email,
         "FoodName": foodName,
         "Foodimage": image,
-        "OredrId": orderId,
+        "OrderId": orderId, // ✅ fixed
         "Status": "pending",
         "Address": address ?? addresscontroller.text,
       };
@@ -107,38 +102,29 @@ class DetailsController extends ChangeNotifier {
       await Databasemethod()
           .addadminOrderdetails(userOrderMap, orderId);
 
-      /// ✅ ORIGINAL SNACKBAR SAME
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: Text(
-            "order place successFully!",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
+            "Order placed successfully!",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
       );
-
     } else {
-      /// ✅ ORIGINAL SNACKBAR SAME
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
           content: Text(
             "Add some money to your wallet",
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ),
       );
     }
   }
 
-  /// ADDRESS BOX (UNCHANGED)
+  /// ADDRESS BOX (same)
   Future openbox(BuildContext context) => showDialog(
         context: context,
         builder: (context) => AlertDialog(
