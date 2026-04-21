@@ -15,16 +15,17 @@ class HomeControler extends ChangeNotifier {
 
   String track = "0";
   bool search = false;
-
+  
   TextEditingController searchcontroller = TextEditingController();
-
+  
   var queryResultSet = [];
   var tempSearchStore = [];
 
-  void initData() {
+  void initData(){
     categories = getcategores();
     pizz = getpizza();
     burger = getburger();
+    
     notifyListeners();
   }
 

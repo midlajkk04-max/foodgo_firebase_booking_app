@@ -12,7 +12,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<HomeControler>(context);
 
-    /// ✅ SAFE INIT (fix for your error)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (provider.categories.isEmpty) {
         provider.initData();
@@ -137,3 +136,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+

@@ -12,19 +12,31 @@ class AdminOrderCard extends StatelessWidget {
     required this.onDeliver,
   });
 
+  String safeGet(String key, {String fallback = "N/A"}) {
+    try {
+      if (ds.data() != null &&
+          (ds.data() as Map<String, dynamic>).containsKey(key)) {
+        return ds[key].toString();
+      }
+      return fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+      margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
       child: Material(
         elevation: 3.0,
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
         ),
         child: Container(
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
@@ -33,75 +45,113 @@ class AdminOrderCard extends StatelessWidget {
           ),
           child: Column(
             children: [
-              SizedBox(height: 5.0),
+              const SizedBox(height: 5.0),
+
+          
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_on_outlined, color: Color(0xffef2b39)),
-                  SizedBox(width: 10.0),
-                  Text(ds["Address"],
-                      style: Appwidgets.simpletextfeildstyle()),
+                  const Icon(Icons.location_on_outlined,
+                      color: Color(0xffef2b39)),
+                  const SizedBox(width: 10.0),
+                  Text(
+                    safeGet("Address"),
+                    style: Appwidgets.simpletextfeildstyle(),
+                  ),
                 ],
               ),
-              Divider(),
+
+              const Divider(),
+
               Row(
                 children: [
+          
                   Image.asset(
-                    ds['Foodimage'],
+                    safeGet("Foodimage"),
                     width: 120,
                     height: 120,
                     fit: BoxFit.cover,
                   ),
-                  SizedBox(width: 20.0),
+
+                  const SizedBox(width: 20.0),
+
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(ds['FoodName'],
-                          style: Appwidgets.boldtextfeildstyle()),
-                      SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Icon(Icons.production_quantity_limits_outlined,
-                              color: Color(0xffef2b39)),
-                          SizedBox(width: 10.0),
-                          Text(ds["Quantity"],
-                              style: Appwidgets.boldtextfeildstyle()),
-                          SizedBox(width: 30.0),
-                          Icon(Icons.monetization_on,
-                              color: Color(0xffef2b39)),
-                          SizedBox(width: 10.0),
-                          Text("\$" + ds["Total"],
-                              style: Appwidgets.boldtextfeildstyle()),
-                        ],
-                      ),
-                      SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Icon(Icons.person, color: Color(0xffef2b39)),
-                          SizedBox(width: 10.0),
-                          Text(ds["Name"],
-                              style: Appwidgets.simpletextfeildstyle()),
-                        ],
-                      ),
-                      SizedBox(height: 5.0),
-                      Row(
-                        children: [
-                          Icon(Icons.mail, color: Color(0xffef2b39)),
-                          SizedBox(width: 10.0),
-                          Text(ds["Email"],
-                              style: Appwidgets.simpletextfeildstyle()),
-                        ],
-                      ),
-                      SizedBox(height: 5.0),
+              
                       Text(
-                        ds["Status"] + "",
-                        style: TextStyle(
+                        safeGet("FoodName"),
+                        style: Appwidgets.boldtextfeildstyle(),
+                      ),
+
+                      const SizedBox(height: 5.0),
+
+                      
+                      Row(
+                        children: [
+                          const Icon(Icons.production_quantity_limits_outlined,
+                              color: Color(0xffef2b39)),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            safeGet("Quantity"),
+                            style: Appwidgets.boldtextfeildstyle(),
+                          ),
+                          const SizedBox(width: 30.0),
+                          const Icon(Icons.monetization_on,
+                              color: Color(0xffef2b39)),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            "\$${safeGet("Total", fallback: "0")}",
+                            style: Appwidgets.boldtextfeildstyle(),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 5.0),
+
+                    
+                      Row(
+                        children: [
+                          const Icon(Icons.person,
+                              color: Color(0xffef2b39)),
+                          const SizedBox(width: 10.0),
+                          Text(
+                            safeGet("Name"),
+                            style: Appwidgets.simpletextfeildstyle(),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 5.0),
+
+                      
+                      Row(
+                        children: [
+                          const Icon(Icons.mail,
+                              color: Color(0xffef2b39)),
+                          
+                          Text(
+                            safeGet("Email"),
+                            style: Appwidgets.simpletextfeildstyle(),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 5.0),
+
+                      
+                      Text(
+                        safeGet("Status"),
+                        style: const TextStyle(
                           color: Color(0xffef2b39),
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5.0),
+
+                      const SizedBox(height: 5.0),
+
+                    
                       GestureDetector(
                         onTap: onDeliver,
                         child: Container(
@@ -112,12 +162,15 @@ class AdminOrderCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
-                            child: Text("Delivered",
-                                style: Appwidgets.whitetextfeildstyle()),
+                            child: Text(
+                              "Delivered",
+                              style: Appwidgets.whitetextfeildstyle(),
+                            ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 10.0),
+
+                      const SizedBox(height: 10.0),
                     ],
                   ),
                 ],

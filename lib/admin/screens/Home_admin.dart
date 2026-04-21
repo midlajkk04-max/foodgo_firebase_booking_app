@@ -45,7 +45,7 @@ class _HomeAdminscreenState extends State<HomeAdminscreen> {
                   children: [
                     SizedBox(height: 20.0),
 
-                    /// 🔹 Manage Orders
+                    
                     AdminHomeCard(
                       image: "assets/images/download (20).png",
                       title: "Manage \norders",
@@ -61,7 +61,7 @@ class _HomeAdminscreenState extends State<HomeAdminscreen> {
 
                     SizedBox(height: 50.0),
 
-                    /// 🔹 Manage Users
+                  
                     AdminHomeCard(
                       image: "assets/images/download (21).png",
                       title: "Manage \nUsers",

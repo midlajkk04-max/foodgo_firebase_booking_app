@@ -147,6 +147,7 @@ class _WalletscreenState extends State<Walletscreen> {
                                             context,
                                           );
                                         }
+                                        provider.amountcontroller.clear();
                                       },
                                       child: const Text("Add"),
                                     ),

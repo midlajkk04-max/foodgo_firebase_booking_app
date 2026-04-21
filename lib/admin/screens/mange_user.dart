@@ -1,9 +1,8 @@
-import 'package:firebase_project_hotel_bookking/admin/admincustom_widgets/manage_user_card.dart';
-import 'package:firebase_project_hotel_bookking/admin/controller/manage_user_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_project_hotel_bookking/admin/admincustom_widgets/manage_user_card.dart';
+import 'package:firebase_project_hotel_bookking/admin/controller/manage_user_controller.dart';
 import 'package:firebase_project_hotel_bookking/core/constants/widget_support.dart';
-
 
 class ManageUsersScreen extends StatefulWidget {
   const ManageUsersScreen({super.key});
@@ -13,12 +12,12 @@ class ManageUsersScreen extends StatefulWidget {
 }
 
 class _ManageUsersScreenState extends State<ManageUsersScreen> {
-
   @override
   void initState() {
     super.initState();
     Future.microtask(() =>
-        Provider.of<ManageUserController>(context, listen: false).fetchUsers());
+        Provider.of<ManageUserController>(context, listen: false)
+            .fetchUsers());
   }
 
   @override
@@ -27,24 +26,22 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
     return Scaffold(
       body: Container(
-        margin: EdgeInsets.only(top: 40.0),
+        margin: const EdgeInsets.only(top: 40),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 20.0),
+              padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Color(0xffef2b39),
+                        color: const Color(0xffef2b39),
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.arrow_back_ios_new_rounded,
                         color: Colors.white,
                       ),
@@ -58,50 +55,53 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+
+            const SizedBox(height: 20),
+
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xffececf8),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
                 ),
-                child: Column(
-                  children: [
-                    SizedBox(height: 20.0),
-                    Container(
-                      height: MediaQuery.of(context).size.height / 2,
-                      child: provider.userStream == null
-                          ? Center(child: CircularProgressIndicator())
-                          : StreamBuilder(
-                              stream: provider.userStream,
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return Container();
-                                }
+                child: provider.userStream == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : StreamBuilder(
+                        stream: provider.userStream,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
 
-                                return ListView.builder(
-                                  padding: EdgeInsets.zero,
-                                  itemCount: snapshot.data.docs.length,
-                                  itemBuilder: (context, index) {
-                                    var ds = snapshot.data.docs[index];
+                          final docs = snapshot.data!.docs;
 
-                                    return ManageUserCard(
-                                      ds: ds,
-                                      onDelete: () async {
-                                        await provider.deleteUser(ds["Id"]);
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                    ),
-                  ],
-                ),
+                          if (docs.isEmpty) {
+                            return const Center(
+                              child: Text("No Users Found"),
+                            );
+                          }
+
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: docs.length,
+                            itemBuilder: (context, index) {
+                              var ds = docs[index];
+
+                              return ManageUserCard(
+                                ds: ds,
+                                onDelete: () async {
+                                  await provider.deleteUser(ds.id);
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
               ),
             ),
           ],

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; 
 import 'package:firebase_project_hotel_bookking/service/shared_preferncehelper.dart';
 import 'package:firebase_project_hotel_bookking/screens/view/bottomnav_screen.dart';
 
 class LoginController extends ChangeNotifier {
-
+  
   String email = "";
   String password = "";
 
@@ -19,11 +20,26 @@ class LoginController extends ChangeNotifier {
         password: password,
       );
 
-      /// ✅ SAME FIX
-      await SharedPreferncehelper()
-          .saveuserId(userCredential.user!.uid);
+      String uid = userCredential.user!.uid;
+
+      
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .get();
+
+      String name = "N/A";
+
+      if (userDoc.exists) {
+        var data = userDoc.data() as Map<String, dynamic>;
+        name = data["Name"] ?? "N/A";
+      }
+
+      
+      await SharedPreferncehelper().saveuserId(uid);
       await SharedPreferncehelper()
           .saveuseremail(userCredential.user!.email!);
+      await SharedPreferncehelper().saveusername(name);
 
       Navigator.push(
         context,
@@ -42,7 +58,7 @@ class LoginController extends ChangeNotifier {
           ),
         );
       } 
-      else if (e.code == "wrong password") {
+      else if (e.code == "wrong-password") {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(

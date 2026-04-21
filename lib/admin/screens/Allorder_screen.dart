@@ -59,6 +59,7 @@ class _AllOrderscreenState extends State<AllOrderscreen> {
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
+                
                 decoration: BoxDecoration(
                   color: Color(0xffececf8),
                   borderRadius: BorderRadius.only(

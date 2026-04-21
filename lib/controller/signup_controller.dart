@@ -8,63 +8,74 @@ import '../screens/view/bottomnav_screen.dart';
 class SignupController extends ChangeNotifier {
   bool isLoading = false;
 
-  Future<void> registerUser({
-    required String name,
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    try {
-      isLoading = true;
-      notifyListeners();
+ Future<void> registerUser({
+  required String name,
+  required String email,
+  required String password,
+  required BuildContext context,
+}) async {
+  try {
+    isLoading = true;
+    notifyListeners();
 
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
 
-      String id = FirebaseAuth.instance.currentUser!.uid;
+    String id = FirebaseAuth.instance.currentUser!.uid;
 
-      Map<String, dynamic> userInfo = {
-        "Name": name,
-        "Email": email,
-        "Id": id,
-        "wallet": "0",
-      };
-      await SharedPreferncehelper().saveuseremail(email);
-      await SharedPreferncehelper().saveusername(name);
-      await SharedPreferncehelper().saveuserId(id);
+    Map<String, dynamic> userInfo = {
+      "Name": name,
+      "Email": email,
+      "Id": id,
+      "wallet": "0",
+    };
 
-      await Databasemethod().adduserdetails(userInfo, id);
+    await SharedPreferncehelper().saveuseremail(email);
+    await SharedPreferncehelper().saveusername(name);
+    await SharedPreferncehelper().saveuserId(id);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text("Registered successfully"),
-        ),
-      );
+    await Databasemethod().adduserdetails(userInfo, id);
 
-      // 🔥 FIX: NAVIGATION ADDED (THIS WAS MISSING)
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BottomNavscreen()),
-        (route) => false,
-      );
-    } on FirebaseAuthException catch (e) {
-      String msg = "Error";
+  
+    if (!context.mounted) return;
 
-      if (e.code == "weak-password") {
-        msg = "Password is too weak";
-      } else if (e.code == "email-already-in-use") {
-        msg = "Account already exists";
-      }
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: Colors.green,
+        content: Text("Registered successfully"),
+      ),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(backgroundColor: Colors.orange, content: Text(msg)),
-      );
-    } finally {
-      isLoading = false;
-      notifyListeners();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => BottomNavscreen()),
+      (route) => false,
+    );
+
+  } on FirebaseAuthException catch (e) {
+    String msg = "Error";
+
+    if (e.code == "weak-password") {
+      msg = "Password is too weak";
+    } else if (e.code == "email-already-in-use") {
+      msg = "Account already exists";
     }
+
+    
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.orange,
+        content: Text(msg),
+      ),
+    );
+
+  } finally {
+    isLoading = false;
+    notifyListeners();
   }
+}
 }

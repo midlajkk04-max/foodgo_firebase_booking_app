@@ -12,7 +12,7 @@ class DetailsController extends ChangeNotifier {
   int quantity = 1;
   int toteprice = 0;
 
-  /// ✅ INIT (FIXED)
+  
   void init(String price) {
     toteprice = int.tryParse(price) ?? 0;
     quantity = 1;
@@ -20,7 +20,7 @@ class DetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// GET USER DATA
+  
   Future<void> getthesharedpref() async {
     name = await SharedPreferncehelper().getusername();
     id = await SharedPreferncehelper().getuserId();
@@ -28,7 +28,7 @@ class DetailsController extends ChangeNotifier {
     address = await SharedPreferncehelper().getuserAddress();
   }
 
-  /// GET WALLET
+ 
   Future<void> getuserWallet() async {
     await getthesharedpref();
 
@@ -47,7 +47,7 @@ class DetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// QUANTITY
+  
   void addQuantity(String price) {
     quantity++;
     toteprice += int.tryParse(price) ?? 0;
@@ -62,7 +62,7 @@ class DetailsController extends ChangeNotifier {
     }
   }
 
-  /// ✅ ORDER (FIXED)
+  
   Future<void> placeOrder(
       BuildContext context, String foodName, String image) async {
 
@@ -87,7 +87,7 @@ class DetailsController extends ChangeNotifier {
         "Name": name,
         "id": id,
         "Quantity": quantity.toString(),
-        "Total": toteprice.toString(), // ✅ fixed
+        "Total": toteprice.toString(), 
         "Email": email,
         "FoodName": foodName,
         "Foodimage": image,

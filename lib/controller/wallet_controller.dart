@@ -20,20 +20,20 @@ class WalletController extends ChangeNotifier {
 
   Stream? walletStream;
 
-  /// INIT
+  
   Future<void> init() async {
     await getShared();
     await loadWallet();
   }
 
-  /// SHARED PREF
+  
   Future<void> getShared() async {
     email = await SharedPreferncehelper().getuseremail();
     id = await SharedPreferncehelper().getuserId();
     notifyListeners();
   }
 
-  /// WALLET + TRANSACTIONS
+  
   Future<void> loadWallet() async {
     await getShared();
 
@@ -45,7 +45,7 @@ class WalletController extends ChangeNotifier {
 wallet = "${querySnapshot.docs[0]["wallet"]}";    notifyListeners();
   }
 
-  /// PAYMENT FLOW
+  
   Future<void> makePayment(String amount, BuildContext context) async {
     try {
       paymentIntent = await createPaymentIntent(amount, 'USD');

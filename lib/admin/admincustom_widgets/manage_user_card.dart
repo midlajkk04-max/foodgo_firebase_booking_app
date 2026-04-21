@@ -6,17 +6,23 @@ class ManageUserCard extends StatelessWidget {
   final DocumentSnapshot ds;
   final VoidCallback onDelete;
 
-  const ManageUserCard({super.key, required this.ds, required this.onDelete});
+  const ManageUserCard({
+    super.key,
+    required this.ds,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final data = ds.data() as Map<String, dynamic>;
+
     return Container(
-      margin: EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
+      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: Material(
-        elevation: 3.0,
+        elevation: 3,
         borderRadius: BorderRadius.circular(30),
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             color: Colors.white,
@@ -33,27 +39,35 @@ class ManageUserCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 20.0),
+              const SizedBox(width: 20),
+
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.person, color: Color(0xffef2b39)),
-                      SizedBox(width: 10.0),
-                      Text(ds["Name"],
-                          style: Appwidgets.boldtextfeildstyle()),
+                      const Icon(Icons.person, color: Color(0xffef2b39)),
+                      const SizedBox(width: 10),
+                      Text(
+                        data["Name"] ?? "No Name",
+                        style: Appwidgets.boldtextfeildstyle(),
+                      ),
                     ],
                   ),
+
                   Row(
                     children: [
-                      Icon(Icons.mail, color: Color(0xffef2b39)),
-                      SizedBox(width: 10.0),
-                      Text(ds["Email"],
-                          style: Appwidgets.simpletextfeildstyle()),
+                      const Icon(Icons.mail, color: Color(0xffef2b39)),
+                      const SizedBox(width: 10),
+                      Text(
+                        data["Email"] ?? "No Email",
+                        style: Appwidgets.simpletextfeildstyle(),
+                      ),
                     ],
                   ),
-                  SizedBox(height: 10.0),
+
+                  const SizedBox(height: 10),
+
                   GestureDetector(
                     onTap: onDelete,
                     child: Container(
@@ -64,8 +78,10 @@ class ManageUserCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
-                        child: Text("Remove",
-                            style: Appwidgets.whitetextfeildstyle()),
+                        child: Text(
+                          "Remove",
+                          style: Appwidgets.whitetextfeildstyle(),
+                        ),
                       ),
                     ),
                   ),

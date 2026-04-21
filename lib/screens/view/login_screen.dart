@@ -61,7 +61,7 @@ class Loginscreen extends StatelessWidget {
                     Text("Email", style: Appwidgets.signuptextfeildstyle()),
                     SizedBox(height: 5),
 
-                    /// ✅ CUSTOM WIDGET
+              
                     LoginTextField(
                       controller: controller.mailcontroller,
                       hint: "Enter Email",

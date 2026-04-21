@@ -19,9 +19,9 @@ class SplashWrapper extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          return BottomNavscreen(); // user logged in
+          return BottomNavscreen(); 
         } else {
-          return Signupscreen(); // or Login screen
+          return Signupscreen(); 
         }
       },
     );
