@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_project_hotel_bookking/service/remote%20configure.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_project_hotel_bookking/model/burger_model.dart';
 import 'package:firebase_project_hotel_bookking/model/category_model.dart';
@@ -15,23 +16,44 @@ class HomeControler extends ChangeNotifier {
 
   String track = "0";
   bool search = false;
-  
+
   TextEditingController searchcontroller = TextEditingController();
-  
+
   var queryResultSet = [];
   var tempSearchStore = [];
 
-  void initData(){
+  final RemoteConfigService remoteConfigService;
+
+  HomeControler({required this.remoteConfigService});
+
+  void initData() {
     categories = getcategores();
-    pizz = getpizza();
+    pizz = getpizza(remoteConfigService);
     burger = getburger();
-    
     notifyListeners();
   }
 
   void changeCategory(String index) {
     track = index;
     notifyListeners();
+  }
+
+  String getDisplayName(String docId, String firestoreName) {
+    if (remoteConfigService.enableFoodOverride &&
+        remoteConfigService.overrideFoodId == docId &&
+        remoteConfigService.overrideFoodName.isNotEmpty) {
+      return remoteConfigService.overrideFoodName;
+    }
+    return firestoreName;
+  }
+
+  String getDisplayPrice(String docId, String firestorePrice) {
+    if (remoteConfigService.enableFoodOverride &&
+        remoteConfigService.overrideFoodId == docId &&
+        remoteConfigService.overrideFoodPrice.isNotEmpty) {
+      return remoteConfigService.overrideFoodPrice;
+    }
+    return firestorePrice;
   }
 
   void initiateSearch(String value) {

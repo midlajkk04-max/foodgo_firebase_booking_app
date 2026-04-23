@@ -68,7 +68,7 @@ class Databasemethod {
 
   Future updateAdminOrder(String id) async {
     return await FirebaseFirestore.instance.collection("orders").doc(id).update(
-      {"Status": "Deliverd"},
+      {"Status": "Delivered"},
     );
   }
 
@@ -113,8 +113,22 @@ class Databasemethod {
         .collection("Food")
         .where(
           "SearchKey",
-          isEqualTo: updatedname.substring(0, 1).toUppercase(),
+          isEqualTo: updatedname.substring(0, 1).toUpperCase(),
         )
         .get();
+  }
+
+  Future addFood(Map<String, dynamic> foodMap, String id) async {
+    return await FirebaseFirestore.instance
+        .collection("Food")
+        .doc(id)
+        .set(foodMap);
+  }
+
+  Future<Stream<QuerySnapshot>> getFoodByCategory(String category) async {
+    return FirebaseFirestore.instance
+        .collection("Food")
+        .where("category", isEqualTo: category)
+        .snapshots();
   }
 }
