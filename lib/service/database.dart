@@ -131,4 +131,13 @@ class Databasemethod {
         .where("category", isEqualTo: category)
         .snapshots();
   }
+
+  Future deleteUserOrder(String userId, String orderId) async {
+  return await FirebaseFirestore.instance
+      .collection("users")
+      .doc(userId)
+      .collection("orders")
+      .doc(orderId)
+      .delete();
+}
 }
