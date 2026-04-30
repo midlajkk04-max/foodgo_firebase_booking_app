@@ -22,7 +22,7 @@ class _AddFoodScreenState extends State<AddFoodScreen> {
     "assets/images/download (12).png",
     "assets/images/download (13).png",
     "assets/images/download (14).png",
-    "assets/images/download (15).png",
+    
     "assets/images/download (16).png",
     "assets/images/category_1.png",
   ];

@@ -26,7 +26,7 @@ class _SignupscreenState extends State<Signupscreen> {
         child: Stack(
           children: [
 
-            // ================= TOP SECTION (NO CHANGE) =================
+            
             Container(
               height: MediaQuery.of(context).size.height / 2.5,
               padding: EdgeInsets.only(top: 30.0),
@@ -56,7 +56,7 @@ class _SignupscreenState extends State<Signupscreen> {
               ),
             ),
 
-            // ================= FORM SECTION (NO CHANGE) =================
+            
             Container(
               margin: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height / 3.2,
@@ -93,7 +93,7 @@ class _SignupscreenState extends State<Signupscreen> {
                           style: Appwidgets.signuptextfeildstyle()),
                       SizedBox(height: 5.0),
 
-                      // ===== NAME FIELD (EXACT YOUR DECORATION) =====
+                     
                       Container(
                         decoration: BoxDecoration(
                           color: Color(0xffececf8),

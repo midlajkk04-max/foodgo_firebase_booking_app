@@ -4,9 +4,7 @@ import 'package:firebase_project_hotel_bookking/screens/view/signup_screen.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../controller/profile_controller.dart';
-import '../../service/profile_auth.dart';
 import '../view/onboarding.dart';
 import '../../core/constants/widget_support.dart';
 
@@ -55,7 +53,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                         children: [
                           const SizedBox(height: 30),
 
-                          /// IMAGE (same UI)
+                         
                           Container(
                             height: 150,
                             width: 150,
@@ -70,7 +68,7 @@ class _ProfilescreenState extends State<Profilescreen> {
 
                           const SizedBox(height: 40),
 
-                          /// NAME
+                          
                           infoCard(
                             icon: Icons.person,
                             title: "Name",
@@ -79,7 +77,7 @@ class _ProfilescreenState extends State<Profilescreen> {
 
                           const SizedBox(height: 35),
 
-                          /// EMAIL
+                        
                           infoCard(
                             icon: Icons.mail_outline,
                             title: "Email",

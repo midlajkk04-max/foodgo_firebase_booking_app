@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../service/database.dart';
 import '../service/shared_preferncehelper.dart';

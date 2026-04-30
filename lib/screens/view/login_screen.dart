@@ -16,7 +16,7 @@ class Loginscreen extends StatelessWidget {
       body: Stack(
         children: [
 
-          /// TOP UI (UNCHANGED)
+          
           Container(
             height: MediaQuery.of(context).size.height / 2.5,
             padding: EdgeInsets.only(top: 30.0),
@@ -36,7 +36,7 @@ class Loginscreen extends StatelessWidget {
             ),
           ),
 
-          /// FORM
+          
           Container(
             margin: EdgeInsets.only(
               top: MediaQuery.of(context).size.height / 3.2,

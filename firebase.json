@@ -1,1 +1,48 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"foodgo-b691b","appId":"1:576635748793:android:c07539f8439dd8b58ef668","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"foodgo-b691b","configurations":{"android":"1:576635748793:android:c07539f8439dd8b58ef668","ios":"1:576635748793:ios:9c7f101d74df73ce8ef668"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "foodgo-b691b",
+          "appId": "1:576635748793:android:c07539f8439dd8b58ef668",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "foodgo-b691b",
+          "configurations": {
+            "android": "1:576635748793:android:c07539f8439dd8b58ef668",
+            "ios": "1:576635748793:ios:9c7f101d74df73ce8ef668"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "source": "functions"
+    },
+    {
+      "source": "food_notification",
+      "codebase": "food_notification",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
+}

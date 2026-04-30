@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Databasemethod {
   Future adduserdetails(Map<String, dynamic> userinfomap, String id) async {
@@ -139,5 +140,18 @@ class Databasemethod {
       .collection("orders")
       .doc(orderId)
       .delete();
+}
+Future saveToken(String userId) async {
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  print("TOKEN: $token");
+
+ 
+  await FirebaseFirestore.instance
+      .collection("users")
+      .doc(userId)
+      .update({
+    "fcmToken": token,
+  });
 }
 }
